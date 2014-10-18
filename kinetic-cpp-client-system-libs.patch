@@ -1,0 +1,166 @@
+--- kinetic-cpp-client-0.1.1/CMakeLists.txt.orig	2014-09-18 02:14:04.000000000 +0200
++++ kinetic-cpp-client-0.1.1/CMakeLists.txt	2014-10-18 09:52:42.239547308 +0200
+@@ -26,13 +26,13 @@
+     set(CONFIG_HOST_FLAG --host=arm)
+     set(CHILD_MAKE_FLAGS CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER} RANLIB=${CMAKE_RANLIB})
+   else(${BUILD_FOR_ARM})
+-    set(CMAKE_C_COMPILER "gcc")
+-    set(CMAKE_CXX_COMPILER "g++")
++    set(CMAKE_C_COMPILER "gcc" CACHE STRING "")
++    set(CMAKE_CXX_COMPILER "g++" CACHE STRING "")
+     set(OPENSSL_CONFIGURE_COMMAND ../openssl/config -DPURIFY)
+   endif(${BUILD_FOR_ARM})
+ endif(APPLE)
+ 
+-set(CMAKE_CXX_FLAGS "--std=c++0x -Wall -Wextra -Werror -Wno-unknown-warning-option -Wno-unused-parameter -Wno-null-dereference -Wno-unused-local-typedefs -DGTEST_USE_OWN_TR1_TUPLE=1 ${BUILD_PIC_COMPILER_FLAGS}")
++set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++0x -Wall -Wextra  -Wno-unused-parameter -Wno-unused-local-typedefs -DGTEST_USE_OWN_TR1_TUPLE=1 ${BUILD_PIC_COMPILER_FLAGS}")
+ 
+ set(TEST_BINARY "kinetic_client_test")
+ set(TEST_BINARY_PATH ${kinetic_cpp_client_BINARY_DIR}/${TEST_BINARY})
+@@ -55,98 +55,17 @@
+ set(KINETIC_PROTO_VERSION "3.0.0")
+ set(KINETIC_PROTO_MD5 "85ca027b870811a297c1f6d792498934")
+ 
+-ExternalProject_add(
+-    kinetic-proto
+-    PREFIX ${PREFIX}
+-    DOWNLOAD_COMMAND curl -L https://github.com/Seagate/kinetic-protocol/archive/${KINETIC_PROTO_VERSION}.tar.gz -o kinetic-proto.tar.gz && openssl md5 kinetic-proto.tar.gz | grep -q ${KINETIC_PROTO_MD5} && rm -rf kinetic-proto && mkdir -p kinetic-proto && tar -xz --strip-components 1 -C kinetic-proto -f kinetic-proto.tar.gz
+-    BUILD_IN_SOURCE 1
+-    CONFIGURE_COMMAND ""
+-    BUILD_COMMAND ""
+-    INSTALL_COMMAND ""
+-)
+-
+-ExternalProject_add(
+-    gflags
+-    PREFIX ${EXTERNAL_PREFIX}
+-    URL "${kinetic_cpp_client_SOURCE_DIR}/tarballs/gflags-2.0-no-svn-files.tar.gz"
+-    URL_MD5 "9084829124e02a7e6be0f0f824523423"
+-    CONFIGURE_COMMAND ../gflags/configure --prefix=${EXTERNAL_PREFIX} --enable-static ${CONFIG_HOST_FLAG} ${CHILD_MAKE_FLAGS} ${PIC_MAKE_FLAGS}
+-)
+-
+-ExternalProject_add(
+-    glog
+-    PREFIX ${EXTERNAL_PREFIX}
+-    URL "${kinetic_cpp_client_SOURCE_DIR}/tarballs/glog-0.3.3.tar.gz"
+-    URL_MD5 "a6fd2c22f8996846e34c763422717c18"
+-    PATCH_COMMAND sh ${kinetic_cpp_client_SOURCE_DIR}/patches/apply-glog-patches.sh ${kinetic_cpp_client_SOURCE_DIR}
+-    CONFIGURE_COMMAND ../glog/configure --prefix=${EXTERNAL_PREFIX} --with-gflags=${EXTERNAL_PREFIX} --enable-static ${CONFIG_HOST_FLAG} ${CHILD_MAKE_FLAGS} ${PIC_MAKE_FLAGS}
+-    DEPENDS gflags
+-)
+-
+-ExternalProject_add(
+-    gtest
+-    PREFIX ${EXTERNAL_PREFIX}
+-    URL "${kinetic_cpp_client_SOURCE_DIR}/tarballs/gtest-1.6.0.zip"
+-    URL_MD5 "4577b49f2973c90bf9ba69aa8166b786"
+-    BUILD_IN_SOURCE 1
+-    CONFIGURE_COMMAND ""
+-    BUILD_COMMAND ${CMAKE_CXX_COMPILER} -DGTEST_USE_OWN_TR1_TUPLE=1 -I../gtest -I../gtest/include -c ../gtest/src/gtest-all.cc && ar -rv libgtest.a gtest-all.o && ranlib libgtest.a
+-    INSTALL_COMMAND ""
+-)
+-
+-ExternalProject_add(
+-    gmock
+-    PREFIX ${EXTERNAL_PREFIX}
+-    URL "${kinetic_cpp_client_SOURCE_DIR}/tarballs/gmock-1.6.0.zip"
+-    URL_MD5 "f547f47321ca88d3965ca2efdcc2a3c1"
+-    BUILD_IN_SOURCE 1
+-    CONFIGURE_COMMAND ""
+-    BUILD_COMMAND ${CMAKE_CXX_COMPILER} -DGTEST_USE_OWN_TR1_TUPLE=1 -I../gmock -I../gmock/include -I../gtest -I../gtest/include -c ../gmock/src/gmock-all.cc && ar -rv libgmock.a gmock-all.o && ranlib libgmock.a
+-    INSTALL_COMMAND ""
+-    DEPENDS gtest
+-)
+-
+-ExternalProject_add(
+-    openssl
+-    PREFIX ${EXTERNAL_PREFIX}
+-    URL "${kinetic_cpp_client_SOURCE_DIR}/tarballs/openssl-1.0.1g.tar.gz"
+-    URL_MD5 "de62b43dfcd858e66a74bee1c834e959"
+-    BUILD_IN_SOURCE 1
+-    CONFIGURE_COMMAND ${OPENSSL_CONFIGURE_COMMAND} --prefix=${EXTERNAL_PREFIX} ${BUILD_PIC_COMPILER_FLAG}
+-    BUILD_COMMAND touch apps/openssl && touch openssl.pc && make ${CHILD_MAKE_FLAGS} build_libs libssl.pc libcrypto.pc
+-    INSTALL_COMMAND make install_sw
+-)
+-
+-# The protobuf build requires the existence of a protoc binary that can be
+-# executed on the host machine. To handle cross compilation, we always build
+-# protobuf once for the host so that we have a suitable copy of protoc.
+-ExternalProject_add(
+-    protoc
+-    PREFIX ${EXTERNAL_PREFIX}/host
+-    URL "${kinetic_cpp_client_SOURCE_DIR}/tarballs/protobuf-2.5.0.tar.bz2"
+-    URL_MD5 "a72001a9067a4c2c4e0e836d0f92ece4"
+-    CONFIGURE_COMMAND ../protoc/configure --prefix=${EXTERNAL_PREFIX}/host --enable-static
+-)
+-
++add_library(gmock STATIC /usr/src/gmock/src/gmock-all.cc)
+ # Protobuf code generation rules
+-set(PROTOC_PATH "${PREFIX}/host/bin/protoc")
+-set(PROTO_DIR "${CMAKE_BINARY_DIR}/vendor/src/kinetic-proto")
++set(PROTOC_PATH "protoc")
++set(PROTO_DIR "/usr/share/kinetic-protocol")
+ set(PROTO_ORIG_PATH "${PROTO_DIR}/kinetic.proto")
+-set(PROTO_MODIFIED_PATH "${PROTO_DIR}/kinetic_client.proto")
+-ExternalProject_add(
+-    protobuf
+-    PREFIX ${EXTERNAL_PREFIX}
+-    URL "${kinetic_cpp_client_SOURCE_DIR}/tarballs/protobuf-2.5.0.tar.bz2"
+-    URL_MD5 "a72001a9067a4c2c4e0e836d0f92ece4"
+-    CONFIGURE_COMMAND ../protobuf/configure --prefix=${EXTERNAL_PREFIX} --enable-static --with-protoc=${PROTOC_PATH} ${CONFIG_HOST_FLAG} ${CHILD_MAKE_FLAGS} ${PIC_MAKE_FLAGS}
+-    DEPENDS protoc
+-)
++set(PROTO_MODIFIED_PATH "${CMAKE_BINARY_DIR}/kinetic_client.proto")
+ 
+ add_custom_command(
+     COMMENT "Compiling protobuf"
+     OUTPUT ${GENERATED_SOURCES_PATH}/kinetic_client.pb.h ${GENERATED_SOURCES_PATH}/kinetic_client.pb.cc
+-    COMMAND mkdir -p ${GENERATED_SOURCES_PATH} && sed 's/com\\.seagate\\.kinetic\\.proto/com.seagate.kinetic.client.proto/' ${PROTO_ORIG_PATH} > ${PROTO_MODIFIED_PATH} && ${PROTOC_PATH} -I=${PROTO_DIR} --cpp_out=${GENERATED_SOURCES_PATH} ${PROTO_MODIFIED_PATH}
+-    DEPENDS kinetic-proto protoc protobuf
++    COMMAND mkdir -p ${GENERATED_SOURCES_PATH} && sed 's/com\\.seagate\\.kinetic\\.proto/com.seagate.kinetic.client.proto/' ${PROTO_ORIG_PATH} > ${PROTO_MODIFIED_PATH} && ${PROTOC_PATH} -I=${CMAKE_BINARY_DIR} --cpp_out=${GENERATED_SOURCES_PATH} ${PROTO_MODIFIED_PATH}
+ )
+ set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${GENERATED_SOURCES_PATH})
+ 
+@@ -158,20 +76,14 @@
+     src/test/mock
+     src/test
+ 
+-    ${EXTERNAL_PREFIX}/include
+-    ${EXTERNAL_PREFIX}/src/gmock/include
+-    ${EXTERNAL_PREFIX}/src/gtest/include
+ )
+ 
+ set(LIBRARY_DEPENDENCIES
+     kinetic_client
+-    ${CMAKE_BINARY_DIR}/vendor/lib/libglog.a
+-    ${CMAKE_BINARY_DIR}/vendor/lib/libgflags.a
+-    ${CMAKE_BINARY_DIR}/vendor/lib/libssl.a
+-    ${CMAKE_BINARY_DIR}/vendor/lib/libcrypto.a
+-    ${CMAKE_BINARY_DIR}/vendor/lib/libprotobuf.a
+-    ${CMAKE_BINARY_DIR}/vendor/src/gtest/libgtest.a
+-    ${CMAKE_BINARY_DIR}/vendor/src/gmock/libgmock.a
++    glog
++    ssl
++    crypto
++    protobuf
+     ${CMAKE_THREAD_LIBS_INIT}
+     dl
+ )
+@@ -127,7 +127,7 @@
+     src/test/message_stream_test.cc
+     src/test/string_value_test.cc
+ )
+-target_link_libraries(${TEST_BINARY} ${LIBRARY_DEPENDENCIES})
++target_link_libraries(${TEST_BINARY} ${LIBRARY_DEPENDENCIES} gflags gmock gtest)
+ 
+ add_executable(${INTEGRATION_TEST_BINARY}
+     src/integration_test/delete_test.cc
+@@ -137,7 +137,7 @@
+     src/integration_test/blocking_smoketest.cc
+     src/test/kinetic_cpp_client_test.cc
+ )
+-target_link_libraries(${INTEGRATION_TEST_BINARY} ${LIBRARY_DEPENDENCIES})
++target_link_libraries(${INTEGRATION_TEST_BINARY} ${LIBRARY_DEPENDENCIES} gflags gmock gtest)
+ 
+ # Rule for running unit tests
+ add_custom_target(check
