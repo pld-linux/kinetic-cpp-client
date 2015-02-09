@@ -164,3 +164,13 @@
  
  # Rule for running unit tests
  add_custom_target(check
+--- kinetic-cpp-client-0.1.1/src/test/kinetic_cpp_client_test.cc.orig	2014-09-18 02:14:04.000000000 +0200
++++ kinetic-cpp-client-0.1.1/src/test/kinetic_cpp_client_test.cc	2015-02-08 17:07:59.844379055 +0100
+@@ -41,6 +41,6 @@
+     int status = RUN_ALL_TESTS();
+     google::protobuf::ShutdownProtobufLibrary();
+     google::ShutdownGoogleLogging();
+-    google::ShutDownCommandLineFlags();
++    gflags::ShutDownCommandLineFlags();
+     return status;
+ }

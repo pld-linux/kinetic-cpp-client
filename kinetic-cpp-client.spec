@@ -6,7 +6,7 @@ Summary:	Kinetic C++ client library
 Summary(pl.UTF-8):	Biblioteka kliencka C++ Kinetic
 Name:		kinetic-cpp-client
 Version:	0.1.1
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://github.com/Seagate/kinetic-cpp-client/archive/%{version}/%{name}-%{version}.tar.gz
@@ -79,6 +79,7 @@ install -d $RPM_BUILD_ROOT{%{_includedir},%{_libdir}}
 
 install build/libkinetic_client.so $RPM_BUILD_ROOT%{_libdir}
 cp -pr include/kinetic $RPM_BUILD_ROOT%{_includedir}
+cp -p src/main/generated/kinetic_client.pb.h $RPM_BUILD_ROOT%{_includedir}/kinetic
 
 %clean
 rm -rf $RPM_BUILD_ROOT
