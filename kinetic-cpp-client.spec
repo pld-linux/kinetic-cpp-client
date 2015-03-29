@@ -1,12 +1,12 @@
 #
 # Conditional build:
 %bcond_without	apidocs		# do not build and package API docs
-#
+
 Summary:	Kinetic C++ client library
 Summary(pl.UTF-8):	Biblioteka kliencka C++ Kinetic
 Name:		kinetic-cpp-client
 Version:	0.1.1
-Release:	2
+Release:	3
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://github.com/Seagate/kinetic-cpp-client/archive/%{version}/%{name}-%{version}.tar.gz
@@ -53,6 +53,9 @@ Pliki nagłówkowe biblioteki klienckiej C++ Kinetic.
 Summary:	Kinetic C++ client API documentation
 Summary(pl.UTF-8):	Dokumentacja API biblioteki klienckiej C++ Kinetic
 Group:		Documentation
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
 
 %description apidocs
 API documentation for Kinetic C++ client library.
