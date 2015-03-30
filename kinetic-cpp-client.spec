@@ -6,7 +6,7 @@ Summary:	Kinetic C++ client library
 Summary(pl.UTF-8):	Biblioteka kliencka C++ Kinetic
 Name:		kinetic-cpp-client
 Version:	0.1.1
-Release:	3
+Release:	4
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://github.com/Seagate/kinetic-cpp-client/archive/%{version}/%{name}-%{version}.tar.gz
