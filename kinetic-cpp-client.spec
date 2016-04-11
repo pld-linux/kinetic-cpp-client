@@ -9,10 +9,10 @@ Version:	0.1.1
 Release:	4
 License:	GPL v2+
 Group:		Libraries
-Source0:	https://github.com/Seagate/kinetic-cpp-client/archive/%{version}/%{name}-%{version}.tar.gz
+Source0:	https://github.com/Kinetic/kinetic-cpp-client/archive/%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	ac77cc4ebf388e0e1d690317888373e6
 Patch0:		%{name}-system-libs.patch
-URL:		https://github.com/Seagate/kinetic-cpp-client/
+URL:		https://github.com/Kinetic/kinetic-cpp-client/
 BuildRequires:	cmake >= 2.8.6
 %{?with_apidocs:BuildRequires:	doxygen}
 BuildRequires:	gflags-devel >= 2.0
