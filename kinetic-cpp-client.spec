@@ -19,7 +19,7 @@ BuildRequires:	cmake >= 2.8.6
 %{?with_apidocs:BuildRequires:	doxygen}
 BuildRequires:	gflags-devel >= 2.0
 BuildRequires:	glog-devel >= 0.3.3
-BuildRequires:	gmock-devel >= 1.6.0
+BuildRequires:	gmock-devel >= 1.10.0
 BuildRequires:	gtest-devel >= 1.6.0
 BuildRequires:	kinetic-protocol >= 4.0
 BuildRequires:	libstdc++-devel

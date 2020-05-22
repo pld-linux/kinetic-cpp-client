@@ -17,7 +17,7 @@
  
  set(TEST_BINARY "kinetic_client_test")
  set(TEST_BINARY_PATH ${kinetic_cpp_client_BINARY_DIR}/${TEST_BINARY})
-@@ -55,98 +55,17 @@
+@@ -55,98 +55,16 @@
  set(KINETIC_PROTO_VERSION "3.0.0")
  set(KINETIC_PROTO_MD5 "85ca027b870811a297c1f6d792498934")
  
@@ -94,7 +94,6 @@
 -    CONFIGURE_COMMAND ../protoc/configure --prefix=${EXTERNAL_PREFIX}/host --enable-static
 -)
 -
-+#add_library(gmock STATIC /usr/src/gmock/src/gmock-all.cc)
  # Protobuf code generation rules
 -set(PROTOC_PATH "${PREFIX}/host/bin/protoc")
 -set(PROTO_DIR "${CMAKE_BINARY_DIR}/vendor/src/kinetic-proto")
@@ -121,7 +120,7 @@
  )
  set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${GENERATED_SOURCES_PATH})
  
-@@ -158,20 +76,14 @@
+@@ -158,20 +75,14 @@
      src/test/mock
      src/test
  
