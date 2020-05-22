@@ -6,12 +6,14 @@ Summary:	Kinetic C++ client library
 Summary(pl.UTF-8):	Biblioteka kliencka C++ Kinetic
 Name:		kinetic-cpp-client
 Version:	0.1.1
-Release:	4
+Release:	5
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://github.com/Kinetic/kinetic-cpp-client/archive/%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	ac77cc4ebf388e0e1d690317888373e6
 Patch0:		%{name}-system-libs.patch
+Patch1:		%{name}-openssl.patch
+Patch2:		%{name}-protocol.patch
 URL:		https://github.com/Kinetic/kinetic-cpp-client/
 BuildRequires:	cmake >= 2.8.6
 %{?with_apidocs:BuildRequires:	doxygen}
@@ -19,7 +21,7 @@ BuildRequires:	gflags-devel >= 2.0
 BuildRequires:	glog-devel >= 0.3.3
 BuildRequires:	gmock-devel >= 1.6.0
 BuildRequires:	gtest-devel >= 1.6.0
-BuildRequires:	kinetic-protocol >= 3.0.0
+BuildRequires:	kinetic-protocol >= 4.0
 BuildRequires:	libstdc++-devel
 BuildRequires:	openssl-devel >= 1.0.1g
 BuildRequires:	protobuf-devel >= 2.5.0
@@ -41,7 +43,7 @@ Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	libstdc++-devel
 Requires:	openssl-devel
-Requires:	protobuf-devel >= 2.5.0
+%requires_ge	protobuf-devel
 
 %description devel
 Header files for Kinetic C++ client library.
@@ -53,7 +55,7 @@ Pliki nagłówkowe biblioteki klienckiej C++ Kinetic.
 Summary:	Kinetic C++ client API documentation
 Summary(pl.UTF-8):	Dokumentacja API biblioteki klienckiej C++ Kinetic
 Group:		Documentation
-%if "%{_rpmversion}" >= "5"
+%if "%{_rpmversion}" >= "4.6"
 BuildArch:	noarch
 %endif
 
@@ -66,6 +68,8 @@ Dokumentacja API biblioteki klienckiej C++ Kinetic.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 %build
 install -d build

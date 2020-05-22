@@ -1,0 +1,22 @@
+--- kinetic-cpp-client-0.1.1/src/main/nonblocking_kinetic_connection.cc.orig	2014-09-18 02:14:04.000000000 +0200
++++ kinetic-cpp-client-0.1.1/src/main/nonblocking_kinetic_connection.cc	2020-05-22 19:24:30.291370906 +0200
+@@ -589,7 +589,7 @@
+     msg->set_authtype(Message_AuthType_HMACAUTH);
+     unique_ptr<Command> request = NewCommand(Command_MessageType_SETUP);
+ 
+-    request->mutable_body()->mutable_setup()->set_firmwaredownload(true);
++    request->mutable_body()->mutable_setup()->set_setupoptype(com::seagate::kinetic::client::proto::Command_Setup::FIRMWARE_SETUPOP);
+ 
+     unique_ptr<SimpleHandler> handler(new SimpleHandler(callback));
+     return service_->Submit(move(msg), move(request), new_firmware, move(handler));
+--- kinetic-cpp-client-0.1.1/src/test/nonblocking_kinetic_connection_test.cc.orig	2014-09-18 02:14:04.000000000 +0200
++++ kinetic-cpp-client-0.1.1/src/test/nonblocking_kinetic_connection_test.cc	2020-05-22 19:42:39.225471644 +0200
+@@ -381,7 +381,7 @@
+     connection_.UpdateFirmware(make_shared<string>("the new firmware"), NULL);
+ 
+     EXPECT_EQ(Command_MessageType_SETUP, message.header().messagetype());
+-    EXPECT_EQ(true, message.body().setup().firmwaredownload());
++    EXPECT_EQ(com::seagate::kinetic::client::proto::Command_Setup::FIRMWARE_SETUPOP, message.body().setup().setupoptype());
+ }
+ 
+ TEST_F(NonblockingKineticConnectionTest, SetACLsBuildsCorrectMessage) {

@@ -1,0 +1,31 @@
+--- kinetic-cpp-client-0.1.1/src/main/hmac_provider.cc.orig	2014-09-18 02:14:04.000000000 +0200
++++ kinetic-cpp-client-0.1.1/src/main/hmac_provider.cc	2020-05-22 18:07:12.566495617 +0200
+@@ -35,22 +35,21 @@
+ 
+ std::string HmacProvider::ComputeHmac(const Message& message,
+         const std::string& key) const {
+-    HMAC_CTX ctx;
+-    HMAC_CTX_init(&ctx);
+-    HMAC_Init_ex(&ctx, key.c_str(), key.length(), EVP_sha1(), NULL);
++    HMAC_CTX *ctx = HMAC_CTX_new();
++    HMAC_Init_ex(ctx, key.c_str(), key.length(), EVP_sha1(), NULL);
+ 
+     if (message.commandbytes().length() != 0) {
+         uint32_t message_length_bigendian = htonl(message.commandbytes().length());
+-        HMAC_Update(&ctx, reinterpret_cast<unsigned char *>(&message_length_bigendian),
++        HMAC_Update(ctx, reinterpret_cast<unsigned char *>(&message_length_bigendian),
+             sizeof(uint32_t));
+-        HMAC_Update(&ctx, reinterpret_cast<const unsigned char *>(message.commandbytes().c_str()),
++        HMAC_Update(ctx, reinterpret_cast<const unsigned char *>(message.commandbytes().c_str()),
+             message.commandbytes().length());
+     }
+ 
+     unsigned char result[SHA_DIGEST_LENGTH];
+     unsigned int result_length = SHA_DIGEST_LENGTH;
+-    HMAC_Final(&ctx, result, &result_length);
+-    HMAC_CTX_cleanup(&ctx);
++    HMAC_Final(ctx, result, &result_length);
++    HMAC_CTX_free(ctx);
+ 
+     return std::string(reinterpret_cast<char *>(result), result_length);
+ }

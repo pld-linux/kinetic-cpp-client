@@ -94,7 +94,7 @@
 -    CONFIGURE_COMMAND ../protoc/configure --prefix=${EXTERNAL_PREFIX}/host --enable-static
 -)
 -
-+add_library(gmock STATIC /usr/src/gmock/src/gmock-all.cc)
++#add_library(gmock STATIC /usr/src/gmock/src/gmock-all.cc)
  # Protobuf code generation rules
 -set(PROTOC_PATH "${PREFIX}/host/bin/protoc")
 -set(PROTO_DIR "${CMAKE_BINARY_DIR}/vendor/src/kinetic-proto")
