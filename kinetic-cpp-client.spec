@@ -55,9 +55,7 @@ Pliki nagłówkowe biblioteki klienckiej C++ Kinetic.
 Summary:	Kinetic C++ client API documentation
 Summary(pl.UTF-8):	Dokumentacja API biblioteki klienckiej C++ Kinetic
 Group:		Documentation
-%if "%{_rpmversion}" >= "4.6"
 BuildArch:	noarch
-%endif
 
 %description apidocs
 API documentation for Kinetic C++ client library.
